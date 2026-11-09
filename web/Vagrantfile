@@ -1,0 +1,25 @@
+Vagrant.configure("2") do |config|
+  config.vm.box         = "devops/ubuntu2404"
+  config.vm.box_version = "1.0.0"
+  config.vm.hostname    = "web01"
+
+  config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  config.vm.synced_folder "site", "/srv/site"
+
+  config.vm.provider "docker" do |d|
+    d.name = "lab-web"
+  end
+
+  config.vm.provision "nginx-conf", type: "file",
+    source: "provision/nginx-site.conf", destination: "/tmp/nginx-site.conf"
+
+  config.vm.provision "bootstrap", type: "shell",
+    path: "provision/bootstrap.sh",
+    args: ["web01"],
+    env:  { "SITE_OWNER" => "Ops Team" }
+
+  config.vm.provision "start-nginx", type: "shell", run: "always", inline: <<-SHELL
+    if pgrep -x nginx >/dev/null; then nginx -s reload; else nginx; fi
+    echo "nginx master running: pid $(pgrep -o -x nginx)"
+  SHELL
+end

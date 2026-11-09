@@ -1,0 +1,29 @@
+# --- Vagrant state ---
+.vagrant/
+*.box
+boxes/build-*/
+boxes/catalog.json
+
+# --- SSH keys (NEVER commit private keys) ---
+vagrant_lab_key
+**/vagrant_lab_key
+**/vagrant_private_key
+
+# --- Python venv ---
+.venv/
+__pycache__/
+*.pyc
+
+# --- Ansible / inventory generated at runtime ---
+**/.vagrant/provisioners/
+*.retry
+
+# --- Logs and runtime artefacts ---
+fleet-events.log
+*.log
+ssh.cfg
+
+# --- Editor / OS noise ---
+.DS_Store
+*.swp
+*~
